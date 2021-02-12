@@ -10,3 +10,7 @@ Host: localhost
 ### Returns just the header  without sending the actual document.
 
 
+POST http://localhost:8080/action_page
+Host: localhost
+
+###

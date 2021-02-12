@@ -79,5 +79,10 @@
             <artifactId>httpclient</artifactId>
             <version>4.5.13</version>
         </dependency>
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>9.2.0.jre15</version>
+        </dependency>
     </dependencies>
 </project>

@@ -4,6 +4,7 @@ module core {
     //requires com.fasterxml.jackson.databind;
     //requires com.fasterxml.jackson.core;
     requires java.net.http;
+    requires java.sql;
 
 
     uses com.iths.spi.Page;

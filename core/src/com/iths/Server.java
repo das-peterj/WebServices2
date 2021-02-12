@@ -16,6 +16,7 @@ public class Server {
 
         try {
             socket = new ServerSocket(8080);
+            System.out.println(Thread.currentThread());
         } catch (IOException e) {
             System.err.println("Could not start server: " + e);
             System.exit(-1);
@@ -40,19 +41,22 @@ public class Server {
                     String misc = in.readLine();
                     if (misc == null || misc.length() == 0)
                         break;
+                }
+                //String reqUrl = request.substring(4, request.length() - 9).trim();
+                //GET /action_page?fname=Peter&lname=Jorgensen HTTP/1.1
+                String reqType = request.split(" ")[0];
+                String reqUrl = request.split(" ")[1];
+
+                if (reqType.equals("POST/")){
 
 
                 }
-                //String reqUrl = request.substring(4, request.length() - 9).trim();
-                String reqType = request.split(" ")[0];
-                String reqUrl = request.split(" ")[1];
 
                 String path = "core/web" + reqUrl;
                 File f = new File(path);
 
                 if  (reqUrl.startsWith("/action_page")) {
                     String reqUrl1 = reqUrl.split("\\?")[1];
-                    System.out.println(reqUrl1);
                     String reqUrlFirstName = reqUrl1.split("&")[0];
                     String reqUrlLastName = reqUrl1.split("&")[1];
                     System.out.println(reqUrlFirstName);

@@ -6,20 +6,23 @@ import java.net.http.HttpResponse;
 public class HttpClientPost {
 
     public static void main( String[] args ) throws Exception {
-
+        System.out.println("test");
             HttpClientPost ClientPost = new HttpClientPost();
-                post("http://localhost:8080/action_page", "hej");
+                ClientPost.post();
+        System.out.println("test2");
     }
 
-    private static void post(String uri, String data) throws Exception {
+    private static void post() throws Exception {
         HttpClient client = HttpClient.newBuilder().build();
+        System.out.println("test3");
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(uri))
-                .POST(HttpRequest.BodyPublishers.ofString(data))
+                .uri(URI.create("http://localhost:8080/action_page"))
+                .POST(HttpRequest.BodyPublishers.ofString("hej"))
                 .build();
-
+        System.out.println("test4");
         HttpResponse<?> response = client.send(request, HttpResponse.BodyHandlers.discarding());
         System.out.println(response.statusCode());
+        System.out.println("test5");
     }
 }
 
