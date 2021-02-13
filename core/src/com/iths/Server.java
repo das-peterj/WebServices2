@@ -51,8 +51,15 @@ public class Server {
                 String reqUrl = request.split(" ")[1];
 
                 if (reqType.equals("POST")){
-
-
+                 /*   String reqUrl1 = reqUrl.split("\\?")[1];
+                    String reqUrlFirstName = reqUrl1.split("&")[0];
+                    String reqUrlLastName = reqUrl1.split("&")[1];
+                        System.out.println(reqUrlFirstName);
+                        System.out.println(reqUrlLastName);
+                    String reqFinalFirstName = reqUrlFirstName.split("=")[1];
+                    String reqFinalLastName = reqUrlLastName.split("=")[1];
+                        System.out.println(reqFinalFirstName);
+                        System.out.println(reqFinalLastName); */
                 }
 
                 String path = "core/web" + reqUrl;
@@ -104,7 +111,7 @@ public class Server {
                             "The requested URL was not found on this server.");
                 }
                 out.flush();
-
+                out.close();
 
             } catch (IOException | SQLException e) {
                 System.err.println(e);
