@@ -11,7 +11,18 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class JavaSQL{
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.iths.models.Todo;
+
+import java.io.File;
+
+public class JavaSQL {
+
+    ResultSet temp;
+
     public static void main(String[] args) {
         Connection conn = null;
 
@@ -21,10 +32,10 @@ public class JavaSQL{
             String dbURL = "jdbc:sqlserver://localhost;DatabaseName=BookstoreBackend6000";
             String user = "peterr";
             String pass = "peterr";
-           // conn = DriverManager.getConnection("jdbc:sqlserver://localhost\\MSSQLSERVER:1433;database=OuijaTestDB;integratedSecurity=true;");
+            // conn = DriverManager.getConnection("jdbc:sqlserver://localhost\\MSSQLSERVER:1433;database=OuijaTestDB;integratedSecurity=true;");
             //Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-           // Class.forName("com.mysql.jdbc.Driver");
-             conn = DriverManager.getConnection(dbURL, user, pass);
+            // Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(dbURL, user, pass);
 
             if (conn != null) {
                 DatabaseMetaData dm = (DatabaseMetaData) conn.getMetaData();

@@ -29,6 +29,8 @@ public class Server {
         }
         System.out.println("FileServer accepting connections on port " + socket.getLocalPort());
 
+        JavaSQL.getJSON();
+
         while (true) {
 
             Socket connection = null;
@@ -42,10 +44,12 @@ public class Server {
                 String request = in.readLine();
                 if (request == null)
                     continue;
+
                 log(connection, request);
                 while (true) {
                     String misc = in.readLine();
                     if (misc == null || misc.length() == 0)
+
                         break;
                 }
 
@@ -53,24 +57,31 @@ public class Server {
                 String reqUrl = request.split(" ")[1];
                 System.out.println("reqType: " + reqType + " | reqUrl: " + reqUrl);
 
-                if (reqType.equals("POST")){
-                 /*   String reqUrl1 = reqUrl.split("\\?")[1];
-                    String reqUrlFirstName = reqUrl1.split("&")[0];
-                    String reqUrlLastName = reqUrl1.split("&")[1];
-                        System.out.println(reqUrlFirstName);
-                        System.out.println(reqUrlLastName);
-                    String reqFinalFirstName = reqUrlFirstName.split("=")[1];
-                    String reqFinalLastName = reqUrlLastName.split("=")[1];
-                        System.out.println(reqFinalFirstName);
-                        System.out.println(reqFinalLastName); */
-                }
-
                 String path = "core/web" + reqUrl;
                 File f = new File(path);
 
-                if  (reqUrl.startsWith("/action_page")) {
-                    System.out.println("troubleshoot");
-                    //GET /action_page?fname=Peter&lname=Jorgensen HTTP/1.1
+                if (reqUrl.startsWith("/ateam-lockerroom")) {
+
+                    System.out.println(path + " PATH");
+                    f = new File(path);
+                    File file = new File(path);
+                    byte[] page = readFromFile(file);
+
+                    InputStream files = new FileInputStream(f);
+
+                    pout.print("HTTP/1.1 200 OK\r\n" +
+                            "Content-Type: " + guessContentType(path) + "\r\n" +
+                            "Content-Length: " + page.length + "\r\n" +
+                            "Date: " + new Date() + "\r\n" +
+                            "Server: FileServer 1.0\r\n\r\n");
+                    sendFile(files, out); // send raw file
+                    log(connection, "200 OK");
+
+                    //break;
+                }
+
+                else if (reqUrl.startsWith("/action_page")) {
+                    // Isolerar fname och lname från html-formuläret
                     String reqUrl1 = reqUrl.split("\\?")[1];
 
                     // Separerar fname och lname
@@ -90,7 +101,6 @@ public class Server {
                     path = path + "index.html";
                     f = new File(path);
                 }
-
                 try {
                     // send the file
                     InputStream files = new FileInputStream(f);
@@ -119,6 +129,7 @@ public class Server {
             } catch (IOException e) {
                 System.err.println(e);
             }
+
         }
 
     }
@@ -183,6 +194,20 @@ public class Server {
         } catch (IOException e) {
             System.err.println(e);
         }
+    }
+
+     /*   private static void createJsonResponse() throws IOException {
+            var todos = new Todos();
+            todos.todos = new ArrayList<>();
+            todos.todos.add(new Todo("Alex" , "Troll" , false));
+            todos.todos.add(new Todo("Håkan" , "Håkansson" , false));
+
+           /JsonConverter converter = new JsonConverter();
+
+            var json = converter.convertToJson(todos);
+
+            System.out.println(json);
+        } */
     }
 
 
