@@ -1,13 +1,14 @@
 package com.iths.models;
 
 public class Todo {
-    int id;
-    String title;
-    boolean completed;
+    public String fornamn;
+    public String efternamn;
+    public boolean completed;
 
-    public Todo(int id, String title, boolean completed) {
-        this.id = id;
-        this.title = title;
+    public Todo(String fornamn, String efternamn, boolean completed) {
+        this.fornamn = fornamn;
+        this.efternamn = efternamn;
         this.completed = completed;
     }
 }
+

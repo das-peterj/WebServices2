@@ -7,20 +7,32 @@
           type="image/png"
           href="https://www.amigocar.com/wp-content/uploads/2020/01/favicon-A-1.png">
     <!--- Adds favicon, the little icon seen in the tab -->
+    <div style="background-image: linear-gradient(to bottom right, teal, hotpink);"></div>
+    <style>
+        body {
+            background-image: url('background.jpg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100%;
+        }
+        a, p, form, br {
+            background-color: darkgray;
+        }
+    </style>
 </head>
 <body>
 <h1>A TEAM</h1>
-<img src="pic.jpg" alt="A-Team"  width="256" height="256">
+<img src="pic.jpg" alt="A-Team"  width="400" height="256">
 <br>
 <a href="Laboration1.pdf">
-    Download labben
+    Laboration1.pdf
 </a>
 
 <form action="/action_page" method="GET">
     <label for="fname">First name:</label>
     <input type="text" id="fname" name="fname"><br><br>
     <label for="lname">Last name:</label>
-    <input type="text" id="lname" name="lname"><br><br>
+    <input type="text" id="lname" name="lname">
     <p>Click on the submit button</p>
     <input type="submit" value="Submit">
 </form>

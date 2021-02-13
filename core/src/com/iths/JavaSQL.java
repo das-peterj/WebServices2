@@ -1,5 +1,6 @@
 package com.iths;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.Calendar;
 import java.sql.Connection;
@@ -59,4 +60,55 @@ public class JavaSQL{
         statement.executeUpdate("INSERT INTO Users " + "VALUES ('" + FName + "', '" + LName + "')");
         //statement.executeUpdate("INSERT INTO Users(FName, LName) values(?, ?)");
     }
+
+    public static void getJSON() throws SQLException, IOException {
+
+        try {
+            // create our mysql database connection
+            String myDriver = "org.gjt.mm.mssql.Driver";
+            String myUrl = "jdbc:sqlserver://localhost;DatabaseName=BookstoreBackend6000";
+            //Class.forName(myDriver);
+            Connection conn = DriverManager.getConnection(myUrl, "peterr", "peterr");
+
+            // create the java statement
+            Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+            st.setCursorName("FirstNameCursor");
+            // our SQL SELECT query.
+            // if you only need a few columns, specify them by name instead of using "*"
+            String query = "SELECT * FROM users";
+
+            //conn.prepareStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+            // execute the query, and get a java resultset
+            ResultSet rs = st.executeQuery(query);
+
+            // iterate through the java resultset
+            rs.first();
+
+            while (rs.next()) {
+
+                String firstName = rs.getString("FirstName");
+                String lastName = rs.getString("LastName");
+
+                // print the results
+                System.out.format("%s, %s\n", firstName, lastName);
+
+            }
+
+            JsonConverter json = new JsonConverter(rs) ;
+
+            File jsonfile = new File("core/web/jsonfile");
+            ObjectMapper om = new ObjectMapper();
+            om.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+
+            om.writeValue(jsonfile, json);
+            rs.close();
+            st.close();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
+}
+
+
