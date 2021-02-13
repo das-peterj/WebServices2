@@ -2,6 +2,8 @@ package com.iths;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import java.io.File;
 import java.io.FileInputStream;
@@ -57,11 +59,25 @@ public class Server {
                 File f = new File(path);
 
                 if  (reqUrl.startsWith("/action_page")) {
+                    System.out.println("troubleshoot");
+                    //GET /action_page?fname=Peter&lname=Jorgensen HTTP/1.1
                     String reqUrl1 = reqUrl.split("\\?")[1];
+                    System.out.println(reqUrl1 + " 1");
                     String reqUrlFirstName = reqUrl1.split("&")[0];
                     String reqUrlLastName = reqUrl1.split("&")[1];
-                    System.out.println(reqUrlFirstName);
-                    System.out.println(reqUrlLastName);
+                    System.out.println(reqUrlFirstName + " firstname");
+                    System.out.println(reqUrlLastName + " lastname");
+                    String reqFinalFirstName = reqUrlFirstName.split("=")[1];
+                    String reqFinalLastName = reqUrlLastName.split("=")[1];
+                    System.out.println(reqFinalFirstName);
+                    System.out.println(reqFinalLastName);
+
+                    JavaSQL sql;
+                    sql = new JavaSQL();
+                    sql.Insert(reqFinalFirstName, reqFinalLastName);
+
+                    in.close();
+                    in.reset();
 
                 } else if (f.isDirectory()) {
                     // if f file is inside the directory, add index.html
@@ -90,7 +106,7 @@ public class Server {
                 out.flush();
 
 
-            } catch (IOException e) {
+            } catch (IOException | SQLException e) {
                 System.err.println(e);
             }
             try {

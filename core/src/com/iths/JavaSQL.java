@@ -10,7 +10,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class JavaSQL {
+public class JavaSQL{
     public static void main(String[] args) {
         Connection conn = null;
 
@@ -44,5 +44,19 @@ public class JavaSQL {
                 ex.printStackTrace();
             }
         }
+    }
+
+    public void Insert(String FName, String LName) throws SQLException {
+        Connection conn = null;
+        String dbURL = "jdbc:sqlserver://localhost;DatabaseName=BookstoreBackend6000";
+        String user = "peterr";
+        String pass = "peterr";
+        conn = DriverManager.getConnection(dbURL, user, pass);
+        // create a Statement from the connection
+        Statement statement = conn.createStatement();
+
+// insert the data
+        statement.executeUpdate("INSERT INTO Users " + "VALUES ('" + FName + "', '" + LName + "')");
+        //statement.executeUpdate("INSERT INTO Users(FName, LName) values(?, ?)");
     }
     }
