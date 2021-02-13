@@ -44,10 +44,11 @@ public class Server {
                 }
                 //String reqUrl = request.substring(4, request.length() - 9).trim();
                 //GET /action_page?fname=Peter&lname=Jorgensen HTTP/1.1
+                // GET / HTTP/1.1
                 String reqType = request.split(" ")[0];
                 String reqUrl = request.split(" ")[1];
 
-                if (reqType.equals("POST/")){
+                if (reqType.equals("POST")){
 
 
                 }

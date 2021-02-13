@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class JavaSQL {
     public static void main(String[] args) {
@@ -15,8 +18,13 @@ public class JavaSQL {
 
             //String dbURL = "jdbc:sqlserver://localhost\\BookstoreBackend6000;IntegratedSecurity=true";
             String dbURL = "jdbc:sqlserver://localhost;DatabaseName=BookstoreBackend6000";
-            conn = DriverManager.getConnection(dbURL);
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            String user = "peterr";
+            String pass = "peterr";
+           // conn = DriverManager.getConnection("jdbc:sqlserver://localhost\\MSSQLSERVER:1433;database=OuijaTestDB;integratedSecurity=true;");
+            //Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+           // Class.forName("com.mysql.jdbc.Driver");
+             conn = DriverManager.getConnection(dbURL, user, pass);
+
             if (conn != null) {
                 DatabaseMetaData dm = (DatabaseMetaData) conn.getMetaData();
                 System.out.println("Driver name: " + dm.getDriverName());
@@ -25,7 +33,7 @@ public class JavaSQL {
                 System.out.println("Product version: " + dm.getDatabaseProductVersion());
             }
 
-        } catch (SQLException | ClassNotFoundException ex) {
+        } catch (SQLException ex) {
             ex.printStackTrace();
         } finally {
             try {

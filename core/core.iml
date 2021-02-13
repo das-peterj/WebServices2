@@ -37,5 +37,33 @@
       </library>
     </orderEntry>
     <orderEntry type="library" exported="" name="lib" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/gsonjar_files/gson-2.8.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES />
+        <JAVADOC />
+        <NATIVE>
+          <root url="file://$USER_HOME$/Downloads/sqljdbc_9.2.0.0_enu/sqljdbc_9.2/enu/auth/x64" />
+        </NATIVE>
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/sqljdbc_9.2.0.0_enu/sqljdbc_9.2/enu/mssql-jdbc-9.2.0.jre15.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
