@@ -1,0 +1,41 @@
+body {
+
+    text-align: center;
+    color: #ADFF2F;
+    background-image: url('background.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+}
+a, p, br {
+    background-color: black;
+
+}
+form {
+    margin: 0 auto;
+    text-align: center;
+    width: 50%;
+    background-color: black;
+    border: 2px solid red;
+    border-radius: 4px;
+}
+
+button, input {
+    border-radius: 2px;
+    border-color: black;
+}
+.clock {
+
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    color: #ADFF2F;
+    font-size: 80px;
+    font-family: Verdana;
+    letter-spacing: 7px;
+}
+#pic {
+    position: relative;
+    cursor: pointer;
+}
