@@ -29,7 +29,7 @@ public class Server {
         }
         System.out.println("FileServer accepting connections on port " + socket.getLocalPort());
 
-        JavaSQL.getJSON();
+
 
         while (true) {
 
@@ -61,7 +61,7 @@ public class Server {
                 File f = new File(path);
 
                 if (reqUrl.startsWith("/ateam-lockerroom")) {
-
+                    JavaSQL.getJSON();
                     System.out.println(path + " PATH");
                     f = new File(path);
                     File file = new File(path);

@@ -5,9 +5,8 @@ module core {
     requires java.sql;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
-    //Skiter i denna så länge
-    // uses com.iths.spi.CurrencyConverter;
-    uses Object;
+    requires com.fasterxml.jackson.annotation;
 
     opens com.iths.models to com.google.gson;
+    opens com.iths to com.google.gson;
 }

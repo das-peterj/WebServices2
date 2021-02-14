@@ -2,7 +2,7 @@ package com.iths;
 
 import java.io.IOException;
 import java.sql.*;
-import java.util.Calendar;
+import java.util.*;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -12,7 +12,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.Versioned;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.iths.models.Todo;
@@ -21,9 +23,8 @@ import java.io.File;
 
 public class JavaSQL {
 
-    ResultSet temp;
-
     public static void main(String[] args) {
+        
         Connection conn = null;
 
         try {
@@ -84,35 +85,53 @@ public class JavaSQL {
             // create the java statement
             Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-            st.setCursorName("FirstNameCursor");
+            //st.setCursorName("FirstNameCursor");
             // our SQL SELECT query.
             // if you only need a few columns, specify them by name instead of using "*"
             String query = "SELECT * FROM users";
-
+            System.out.println(query);
             //conn.prepareStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
             // execute the query, and get a java resultset
             ResultSet rs = st.executeQuery(query);
 
             // iterate through the java resultset
-            rs.first();
 
             while (rs.next()) {
 
-                String firstName = rs.getString("FirstName");
-                String lastName = rs.getString("LastName");
+                List<Map<String, Object>> rows = new ArrayList<>();
+                ResultSetMetaData rsmd = rs.getMetaData();
+                    int colCount = rsmd.getColumnCount();
 
+                    while (rs.next()) {
+                        Map<String, Object> row = new HashMap<>();
+                        for (int i =1; i <= colCount; i++) {
+
+                            String cName = rsmd.getColumnName(i);
+                            Object cVal = rs.getObject(i);
+                            row.put(cName, cVal);
+                        }
+                        rows.add(row);
+                    }
+
+                //String firstName = rs.getString("FirstName");
+                //String lastName = rs.getString("LastName");
                 // print the results
-                System.out.format("%s, %s\n", firstName, lastName);
+                // System.out.format("%s, %s\n", firstName, lastName);
+                    ObjectMapper om = new ObjectMapper();
+                    om.writeValue(new File("core/web/jsonfile"), rows);
+                    om.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
             }
+//            JsonConverter json = new JsonConverter(rs) ;
+//
+//            File jsonfile = new File("core/web/jsonfile");
+//            ObjectMapper om = new ObjectMapper();
+//            om.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+//
+//            om.writeValue(jsonfile, json);
+//            rs.close();
+//            st.close();
 
-            JsonConverter json = new JsonConverter(rs) ;
-
-            File jsonfile = new File("core/web/jsonfile");
-            ObjectMapper om = new ObjectMapper();
-            om.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-
-            om.writeValue(jsonfile, json);
             rs.close();
             st.close();
 
