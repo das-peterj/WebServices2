@@ -117,8 +117,11 @@ public class JavaSQL {
                 //String lastName = rs.getString("LastName");
                 // print the results
                 // System.out.format("%s, %s\n", firstName, lastName);
+
                     ObjectMapper om = new ObjectMapper();
-                    om.writeValue(new File("core/web/jsonfile"), rows);
+                    String testWrite = om.writerWithDefaultPrettyPrinter().writeValueAsString(rows);
+                    om.writeValue(new File("core/web/jsonfile.json"), testWrite);
+                    System.out.println(testWrite);
                     om.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
             }
