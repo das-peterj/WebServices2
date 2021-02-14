@@ -7,35 +7,25 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.core.Versioned;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.iths.models.Todo;
 
 import java.io.File;
 
 public class JavaSQL {
 
+    private static final String dbURL = "jdbc:sqlserver://localhost;DatabaseName=BookstoreBackend6000";
+    private static final String user = "peterr";
+    private static final String pass = "peterr";
+
     public static void main(String[] args) {
-        
+
         Connection conn = null;
 
         try {
 
-            //String dbURL = "jdbc:sqlserver://localhost\\BookstoreBackend6000;IntegratedSecurity=true";
-            String dbURL = "jdbc:sqlserver://localhost;DatabaseName=BookstoreBackend6000";
-            String user = "peterr";
-            String pass = "peterr";
-            // conn = DriverManager.getConnection("jdbc:sqlserver://localhost\\MSSQLSERVER:1433;database=OuijaTestDB;integratedSecurity=true;");
-            //Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            // Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(dbURL, user, pass);
 
             if (conn != null) {
@@ -48,6 +38,7 @@ public class JavaSQL {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+
         } finally {
             try {
                 if (conn != null && !conn.isClosed()) {
@@ -60,47 +51,40 @@ public class JavaSQL {
     }
 
     public void Insert(String FName, String LName) throws SQLException {
-        Connection conn = null;
-        String dbURL = "jdbc:sqlserver://localhost;DatabaseName=BookstoreBackend6000";
-        String user = "peterr";
-        String pass = "peterr";
+
+        Connection conn;
         conn = DriverManager.getConnection(dbURL, user, pass);
+
         // create a Statement from the connection
         Statement statement = conn.createStatement();
 
-// insert the data
+        // insert the data
         statement.executeUpdate("INSERT INTO Users " + "VALUES ('" + FName + "', '" + LName + "')");
-        //statement.executeUpdate("INSERT INTO Users(FName, LName) values(?, ?)");
+
     }
 
     public static void getJSON() throws SQLException, IOException {
 
         try {
-            // create our mysql database connection
-            String myDriver = "org.gjt.mm.mssql.Driver";
-            String myUrl = "jdbc:sqlserver://localhost;DatabaseName=BookstoreBackend6000";
-            //Class.forName(myDriver);
-            Connection conn = DriverManager.getConnection(myUrl, "peterr", "peterr");
 
-            // create the java statement
+            Connection conn = DriverManager.getConnection(dbURL, user, pass);
+
             Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-            //st.setCursorName("FirstNameCursor");
             // our SQL SELECT query.
-            // if you only need a few columns, specify them by name instead of using "*"
             String query = "SELECT * FROM users";
             System.out.println(query);
-            //conn.prepareStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
             // execute the query, and get a java resultset
             ResultSet rs = st.executeQuery(query);
 
             // iterate through the java resultset
-
             while (rs.next()) {
 
                 List<Map<String, Object>> rows = new ArrayList<>();
+
                 ResultSetMetaData rsmd = rs.getMetaData();
-                    int colCount = rsmd.getColumnCount();
+
+                int colCount = rsmd.getColumnCount();
 
                     while (rs.next()) {
                         Map<String, Object> row = new HashMap<>();
@@ -113,28 +97,12 @@ public class JavaSQL {
                         rows.add(row);
                     }
 
-                //String firstName = rs.getString("FirstName");
-                //String lastName = rs.getString("LastName");
-                // print the results
-                // System.out.format("%s, %s\n", firstName, lastName);
-
                     ObjectMapper om = new ObjectMapper();
                     String testWrite = om.writerWithDefaultPrettyPrinter().writeValueAsString(rows);
                     om.writeValue(new File("core/web/jsonfile.json"), testWrite);
                     System.out.println(testWrite);
                     om.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-
             }
-//            JsonConverter json = new JsonConverter(rs) ;
-//
-//            File jsonfile = new File("core/web/jsonfile");
-//            ObjectMapper om = new ObjectMapper();
-//            om.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-//
-//            om.writeValue(jsonfile, json);
-//            rs.close();
-//            st.close();
-
             rs.close();
             st.close();
 

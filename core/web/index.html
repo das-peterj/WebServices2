@@ -1,13 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+   <script>
+       function showTime() {
+
+           var date = new Date();
+           var h = date.getHours();
+           var m = date.getMinutes();
+           var s = date.getSeconds();
+
+           h = (h < 10) ? "0" + h : h;
+           m = (m < 10) ? "0" + m : m;
+           s = (s < 10) ? "0" + s : s;
+
+           var time = h + ":" + m + ":" + "s";
+
+           document.getElementByID("aTeamClock").innerText = time;
+           document.getElementByID("aTeamClock").textContent = time;
+
+           setTimeout(showTime, 1000);
+       }
+
+       showTime();
+
+   </script>
     <meta charset="UTF-8">
     <title>Hello There</title>
     <link rel="icon"
           type="image/png"
           href="https://www.amigocar.com/wp-content/uploads/2020/01/favicon-A-1.png">
     <!--- Adds favicon, the little icon seen in the tab -->
-    <!--- <div style="background-image: linear-gradient(to bottom right, teal, hotpink);"></div> -->
     <style>
         body {
             background-image: url('background.jpg');
@@ -15,32 +37,57 @@
             background-attachment: fixed;
             background-size: 100% 100%;
         }
-        a, p, form, br {
+        a, p, br {
             background-color: white;
+
         }
+        form {
+                text-align: center;
+                background-color: white;
+                border: 2px solid red;
+                border-radius: 4px;
+        }
+        .clock {
+            position: absolute;
+
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            color: #17D4FE;
+            font-size: 60px;
+            font-family: Orbitron;
+            letter-spacing: 7px;
+        }
+
     </style>
 </head>
 <body>
+
+
+
 <h1>A TEAM</h1>
 <img src="pic.jpg" alt="A-Team"  width="400" height="256">
-<br>
+<br><br>
 <a href="Laboration1.pdf">
     Laboration1.pdf
 </a>
-
+<br>
 <form action="/action_page.html" method="GET">
-
-
+    <br><br>
     <label for="fname">First name:</label>
     <input type="text" id="fname" name="fname"><br><br>
     <label for="lname">Last name:</label>
     <input type="text" id="lname" name="lname">
     <p>Click on the submit button</p>
     <input type="submit" value="Submit">
+    <br><br>
+    <input type="button" value="Hämta Json" class="button_active" onclick="location.href='ateam-lockerroom.html';"/>
+    <br><br>
 
 </form>
 
-<a href="ateam-lockerroom.html">DATABAS</a>
+    <div id="aTeamClock" class="clock" onload="showTime()"></div>
+    <p>test</p>
 
 </body>
 </html>

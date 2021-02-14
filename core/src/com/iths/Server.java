@@ -1,13 +1,9 @@
 package com.iths;
 
-import com.iths.models.Todo;
-import com.iths.models.Todos;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,8 +25,6 @@ public class Server {
         }
         System.out.println("FileServer accepting connections on port " + socket.getLocalPort());
 
-
-
         while (true) {
 
             Socket connection = null;
@@ -49,7 +43,6 @@ public class Server {
                 while (true) {
                     String misc = in.readLine();
                     if (misc == null || misc.length() == 0)
-
                         break;
                 }
 
@@ -74,10 +67,9 @@ public class Server {
                             "Content-Length: " + page.length + "\r\n" +
                             "Date: " + new Date() + "\r\n" +
                             "Server: FileServer 1.0\r\n\r\n");
-                    sendFile(files, out); // send raw file
+                    sendFile(files, out);
                     log(connection, "200 OK");
 
-                    //break;
                 }
 
                 else if (reqUrl.startsWith("/action_page")) {
@@ -97,12 +89,12 @@ public class Server {
                     sql.Insert(reqFinalFirstName, reqFinalLastName);
 
                 } else if (f.isDirectory()) {
-                    // if f file is inside the directory, add index.html
+                    // om f path är inne i directory(core/web) så läggs index.html till i slutet
                     path = path + "index.html";
                     f = new File(path);
                 }
                 try {
-                    // send the file
+                    // skickar filen
                     InputStream files = new FileInputStream(f);
                     File file = new File(path);
                     byte[] page = readFromFile(file);
@@ -112,10 +104,9 @@ public class Server {
                             "Content-Length: " + page.length + "\r\n" +
                             "Date: " + new Date() + "\r\n" +
                             "Server: FileServer 1.0\r\n\r\n");
-                    sendFile(files, out); // send raw file
+                    sendFile(files, out);
                     log(connection, "200 OK");
                 } catch (FileNotFoundException e) {
-                    // file not found
                     errorReport(pout, connection, "404", "Not Found",
                             "The requested URL was not found on this server.");
                 }
@@ -129,9 +120,7 @@ public class Server {
             } catch (IOException e) {
                 System.err.println(e);
             }
-
         }
-
     }
 
     public static byte[] readFromFile(File file) {
@@ -181,7 +170,6 @@ public class Server {
     }
 
     private static void log(Socket connection, String msg) {
-
         System.err.println(new Date() + " [" + connection.getInetAddress().getHostAddress() +
                 ":" + connection.getPort() + "] " + msg);
     }
