@@ -14,133 +14,120 @@ import java.util.concurrent.Executors;
 
 public class Server {
 
-    public static void main(String[] args) throws IOException, SQLException {
-        System.out.println("hej");
+    public static void main(String[] args) {
 
         ExecutorService execserv = Executors.newCachedThreadPool();
 
-            execserv.execute(() -> {
-            System.out.println("hej");
+        try {
+            ServerSocket serverSocket = new ServerSocket(8080);
+            System.out.println(Thread.currentThread());
+            System.out.println("FileServer accepting connections on port " + serverSocket.getLocalPort());
 
-            Thread testThread = new Thread(() -> {
-                System.out.println("hej");
-                //noinspection RedundantExplicitVariableType
-                ServerSocket socket = null;
+            while (true) {
+                Socket socket = serverSocket.accept();
+                execserv.execute(() -> handleConnection (socket));
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+            private static void handleConnection(Socket socket) {
+                System.out.println(Thread.currentThread());
                 try {
-                    socket = new ServerSocket(8080);
-                    System.out.println(Thread.currentThread());
 
-                    System.out.println("FileServer accepting connections on port " + socket.getLocalPort());
+                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    OutputStream out = new BufferedOutputStream(socket.getOutputStream());
+                    PrintStream pout = new PrintStream(out);
+
+                    String request = in.readLine();
+                    String reqType = request.split(" ")[0];
+                    String reqUrl = request.split(" ")[1];
+
+                    if(reqType.startsWith("/POST")){
+
+                    }
+
+                    log(socket, request);
+                    while (true) {
+                        String misc = in.readLine();
+                        if (misc == null || misc.length() == 0)
+                            break;
+                    }
+
+                    System.out.println("reqType: " + reqType + " | reqUrl: " + reqUrl);
+                    String path = "core/web" + reqUrl;
+                    File f = new File(path);
+
+                    if (reqUrl.startsWith("/jsonHandler")) {
+                        JavaSQL.getJSON();
+
+                        f = new File(path);
+                        File file = new File(path);
+                        byte[] page = readFromFile(file);
+
+                        InputStream files = new FileInputStream(f);
+
+                        pout.print("HTTP/1.1 200 OK\r\n" +
+                                "Content-Type: " + guessContentType(path) + "\r\n" +
+                                "Content-Length: " + page.length + "\r\n" +
+                                "Date: " + new Date() + "\r\n" +
+                                "Server: FileServer 1.0\r\n\r\n");
+                        sendFile(files, out);
+                        log(socket, "200 OK");
+
+                    } else if (reqUrl.startsWith("/action_page")) {
+                        // Isolerar fname och lname från html-formuläret
+                        String reqUrl1 = reqUrl.split("\\?")[1];
+
+                        // Separerar fname och lname
+                        String reqUrlFirstName = reqUrl1.split("&")[0];
+                        String reqUrlLastName = reqUrl1.split("&")[1];
+
+                        // tar ut bara namnen som användaren har skrivit
+                        String reqFinalFirstName = reqUrlFirstName.split("=")[1];
+                        String reqFinalLastName = reqUrlLastName.split("=")[1];
+
+                        JavaSQL sql;
+                        sql = new JavaSQL();
+                        sql.Insert(reqFinalFirstName, reqFinalLastName);
+
+                    } else if (f.isDirectory()) {
+                        // om f path är inne i directory(core/web) så läggs index.html till i slutet
+                        path = path + "index.html";
+                        f = new File(path);
+                    }
+                    try {
+                        // skickar filen
+                        InputStream files = new FileInputStream(f);
+                        File file = new File(path);
+                        byte[] page = readFromFile(file);
+
+                        pout.print("HTTP/1.1 200 OK\r\n" +
+                                "Content-Type: " + guessContentType(path) + "\r\n" +
+                                "Content-Length: " + page.length + "\r\n" +
+                                "Date: " + new Date() + "\r\n" +
+                                "Server: FileServer 1.0\r\n\r\n");
+                        sendFile(files, out);
+                        log(socket, "200 OK");
+                    } catch (FileNotFoundException e) {
+                        errorReport(pout, socket, "404", "Not Found",
+                                "The requested URL was not found on this server.");
+                    }
+                    out.flush();
+
+                } catch (IOException | SQLException e) {
+                    System.err.println(e);
+                }
+
+                try {
+                    if (socket != null) socket.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-                while (true) {
-
-                    System.out.println(Thread.currentThread());
-                    Socket connection = null;
-
-                    try {
-                        // wait for request
-                        connection = socket.accept();
-
-                        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                        OutputStream out = new BufferedOutputStream(connection.getOutputStream());
-                        PrintStream pout = new PrintStream(out);
-
-                        String request = in.readLine();
-                        if (request == null)
-                            continue;
-
-                        log(connection, request);
-                        while (true) {
-                            String misc = in.readLine();
-                            if (misc == null || misc.length() == 0)
-                                break;
-                        }
-
-                        String reqType = request.split(" ")[0];
-                        String reqUrl = request.split(" ")[1];
-                        System.out.println("reqType: " + reqType + " | reqUrl: " + reqUrl);
-
-                        String path = "core/web" + reqUrl;
-                        File f = new File(path);
-
-                        if (reqUrl.startsWith("/ateam-lockerroom")) {
-                            JavaSQL.getJSON();
-                            System.out.println(path + " PATH");
-                            f = new File(path);
-                            File file = new File(path);
-                            byte[] page = readFromFile(file);
-
-                            InputStream files = new FileInputStream(f);
-
-                            pout.print("HTTP/1.1 200 OK\r\n" +
-                                    "Content-Type: " + guessContentType(path) + "\r\n" +
-                                    "Content-Length: " + page.length + "\r\n" +
-                                    "Date: " + new Date() + "\r\n" +
-                                    "Server: FileServer 1.0\r\n\r\n");
-                            sendFile(files, out);
-                            log(connection, "200 OK");
-
-                        } else if (reqUrl.startsWith("/action_page")) {
-                            // Isolerar fname och lname från html-formuläret
-                            String reqUrl1 = reqUrl.split("\\?")[1];
-
-                            // Separerar fname och lname
-                            String reqUrlFirstName = reqUrl1.split("&")[0];
-                            String reqUrlLastName = reqUrl1.split("&")[1];
-
-                            // tar ut bara namnen som användaren har skrivit
-                            String reqFinalFirstName = reqUrlFirstName.split("=")[1];
-                            String reqFinalLastName = reqUrlLastName.split("=")[1];
-
-                            JavaSQL sql;
-                            sql = new JavaSQL();
-                            sql.Insert(reqFinalFirstName, reqFinalLastName);
-
-                        } else if (f.isDirectory()) {
-
-                            // om f path är inne i directory(core/web) så läggs index.html till i slutet
-                            path = path + "index.html";
-                            f = new File(path);
-                        }
-                        try {
-                            // skickar filen
-                            InputStream files = new FileInputStream(f);
-                            File file = new File(path);
-                            byte[] page = readFromFile(file);
-
-                            pout.print("HTTP/1.1 200 OK\r\n" +
-                                    "Content-Type: " + guessContentType(path) + "\r\n" +
-                                    "Content-Length: " + page.length + "\r\n" +
-                                    "Date: " + new Date() + "\r\n" +
-                                    "Server: FileServer 1.0\r\n\r\n");
-                            sendFile(files, out);
-                            log(connection, "200 OK");
-                        } catch (FileNotFoundException e) {
-                            errorReport(pout, connection, "404", "Not Found",
-                                    "The requested URL was not found on this server.");
-                        }
-                        out.flush();
-
-                    } catch (IOException | SQLException e) {
-                        System.err.println(e);
-
-                    }
-
-                    try {
-
-                        if (connection != null) connection.close();
-                    } catch (IOException e) {
-                        System.err.println(e);
-                    }
-                }
-            });
-            testThread.start();
-        });
-    }
-
+            }
 
         public static byte[] readFromFile (File file){
             byte[] content = new byte[0];

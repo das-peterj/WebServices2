@@ -41,17 +41,16 @@
     <input type="text" id="lname" name="lname">
 	<br>
 	<br>
-    <input type="submit" value="Submit">
-    <br>
-	<br>
-    <input type="button" value="Retrieve Database JSON-file" class="button_active" onclick="window.open('jsonfile.json');"/>
-    <br>
-	<br>
+    <input type="submit" value="Submit names to database">
+<!--    <input type="button" value="Retrieve Database JSON-file" class="button_active" onclick="window.open('jsonfile.json');"/>-->
 </form>
-    <script src = "clockscript.js">   </script>
+<form action="/jsonHandler.html" method="POST">
+    <br>
+        <input type="button" value="Hämta Json" class="button_active" onclick="location.href='jsonHandler.html';"/>
+</form>
+<br
+    <script src = "clockscript.js"></script>
 </body>
     <br>
-	<br>
-	<br>
 	<br>
 </html>

@@ -72,7 +72,7 @@ public class JavaSQL {
             Statement st = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             // our SQL SELECT query.
-            String query = "SELECT * FROM users";
+            String query = "SELECT * FROM Users";
             System.out.println(query);
             // execute the query, and get a java resultset
             ResultSet rs = st.executeQuery(query);
@@ -100,7 +100,7 @@ public class JavaSQL {
                     ObjectMapper om = new ObjectMapper();
                     String testWrite = om.writerWithDefaultPrettyPrinter().writeValueAsString(rows);
                     om.writeValue(new File("core/web/jsonfile.json"), testWrite);
-                    System.out.println(testWrite);
+                    System.out.println(testWrite + "hallå");
                     om.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
             }
             rs.close();

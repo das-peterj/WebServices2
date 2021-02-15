@@ -16,8 +16,6 @@ form {
     text-align: center;
     width: 50%;
     background-color: black;
-    border: 2px solid red;
-    border-radius: 4px;
 }
 
 button, input {
