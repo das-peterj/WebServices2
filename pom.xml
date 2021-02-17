@@ -15,6 +15,8 @@
     <modules>
         <module>fileutils</module>
         <module>fileutils</module>
+        <module>Servlet</module>
+        <module>web/Servlet.java</module>
     </modules>
     <properties>
         <maven.compiler.source>15</maven.compiler.source>

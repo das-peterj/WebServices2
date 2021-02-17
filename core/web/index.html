@@ -33,10 +33,10 @@
 <br>
 <br>
 <form action="/action_page.html" method="GET">
-	<p>Submit name to Database</p>
+	<p>Submit name to Database with GET</p>
 	<br>
     <label for="fname">First name:</label>
-    <input type="text" id="fname" name="fname"><br><br>
+    <input type="text" id="fname" name="fname"><br>
     <label for="lname">Last name:</label>
     <input type="text" id="lname" name="lname">
 	<br>
@@ -46,9 +46,19 @@
 </form>
 <form action="/jsonHandler.html" method="POST">
     <br>
-        <input type="button" value="Hämta Json" class="button_active" onclick="location.href='jsonHandler.html';"/>
+        <input type="button" value="Hämta Databasen i json-form" class="button_active" onclick="location.href='jsonHandler.html';"/>
 </form>
-<br
+<br>
+<a href="LoginServlet.html">
+    <button type ="button">Go to Login page</button></a>
+<!--<form method="POST" action="/LoginServlet">-->
+<!--    <br>-->
+<!--    <label for="user">Username: </label>-->
+<!--    <input type="text" name="username" id="user"/> <br/>-->
+<!--    <label for="pass">Password: </label>-->
+<!--    <input type="password" name="password" id="pass"/> <br/>-->
+<!--    <input type="submit" value="Login" />-->
+<!--</form>-->
     <script src = "clockscript.js"></script>
 </body>
     <br>

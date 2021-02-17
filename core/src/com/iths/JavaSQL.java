@@ -1,18 +1,16 @@
 package com.iths;
 
-import java.io.IOException;
-import java.sql.*;
-import java.util.*;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
+import java.io.IOException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class JavaSQL {
 
@@ -73,7 +71,7 @@ public class JavaSQL {
 
             // our SQL SELECT query.
             String query = "SELECT * FROM Users";
-            System.out.println(query);
+            System.out.println("Query: " + query);
             // execute the query, and get a java resultset
             ResultSet rs = st.executeQuery(query);
 
@@ -100,7 +98,7 @@ public class JavaSQL {
                     ObjectMapper om = new ObjectMapper();
                     String testWrite = om.writerWithDefaultPrettyPrinter().writeValueAsString(rows);
                     om.writeValue(new File("core/web/jsonfile.json"), testWrite);
-                    System.out.println(testWrite + "hallå");
+                    System.out.println(testWrite);
                     om.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
             }
             rs.close();

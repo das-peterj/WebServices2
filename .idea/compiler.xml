@@ -3,6 +3,8 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
       <module name="fileutils" target="15" />
+      <module name="Servlet" target="15" />
+      <module name="Servlet.java" target="15" />
     </bytecodeTargetLevel>
   </component>
 </project>
