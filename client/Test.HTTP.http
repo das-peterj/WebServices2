@@ -9,8 +9,4 @@ HEAD http://localhost:8080/index.html
 Host: localhost
 ### Returns just the header  without sending the actual document.
 
-### Funkar inte just nu
-POST http://localhost:8080/MyServet
-Host: localhost
 
-###

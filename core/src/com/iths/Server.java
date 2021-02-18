@@ -1,12 +1,10 @@
 package com.iths;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.Date;
@@ -15,11 +13,9 @@ import java.util.concurrent.Executors;
 
 
 public class Server {
-
     public static void main(String[] args) {
 
         ExecutorService execserv = Executors.newCachedThreadPool();
-
         try {
             ServerSocket serverSocket = new ServerSocket(8080);
             System.out.println(Thread.currentThread());
@@ -39,131 +35,27 @@ public class Server {
 
         System.out.println(Thread.currentThread());
         try {
-
-//          BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             BufferedInputStream bufferedInputStream = new BufferedInputStream(socket.getInputStream());
             OutputStream out = new BufferedOutputStream(socket.getOutputStream());
             PrintStream pout = new PrintStream(out);
-//            BufferedWriter out = new BufferedWriter(socket.getInputStream());
-//            String request = in.readLine(); // loopa, tills body blir tom
-//            System.out.println(request2 + " | request w/o bufferedInputStream"); // använd en
-
 
             String request = readLine(bufferedInputStream);
-                System.out.println("og  request: " + request);
-                String reqType = request.split(" ")[0];
-                String reqUrl = request.split(" ")[1];
-                System.out.println("reqtype: " + reqType + " || reqURL: " + reqUrl);
+            String reqType = request.split(" ")[0];
+            String reqUrl = request.split(" ")[1];
 
-
-            if (reqUrl.startsWith("/LoginServlet")) {
-
-                System.out.println("BREAK LINE -----------------------------------");
-                MyServlet tempServlet = new MyServlet();
-                String tempReq = null;
-                boolean hasRun = false;
-
-              //  do {
-                    request = readLine(bufferedInputStream);
-                    System.out.println(request);
-                    if (!hasRun) {
-                        String reqType2 = request.split(" ")[0];
-                        String reqUrl2 = request.split(" ")[1];
-                        System.out.println("OneTimeLoop: " + reqType2 + "  ||  " + reqUrl2);
-                        hasRun = true;
-                        tempReq = reqUrl2;
-                        System.out.println("tempReq: " + tempReq);
-
-                 //   }
-
-                }
-                    String requestTEMP = null;
-                    while (requestTEMP == null )
-                {
-                    tempServlet.doPost(HttpServletRequest request, HttpServletResponse response);
-                    System.out.println("BRBRBRBRBR");
-                    System.out.println("BREAK LINE -----------------------------------");
-
-//                String path = "/myServlet.html";
-//                File f = new File(path);
-//                File file = new File(path);
-//                byte[] page = readFromFile(file);
-//                bufferedInputStream.read(page);
-
-                    //readLine(bufferedInputStream);
-
-                    System.out.println(" sadnjaskindasadsadsadsad");
-                    request = readLine(bufferedInputStream);
-                    System.out.println("request: " + request);
-
-
-
-//                    request2 = readLine(bufferedInputStream);
-//                    System.out.println("request2: " + request);
-//                    String reqFirstName = request.split("&")[0];
-//                    String reqLastName = request.split("&")[1];
-//                    String reqFirstName2 = reqFirstName.split("=")[1];
-//                    String reqLastName2 = reqLastName.split("�")[0];
-//                    String reqLastName3 = reqLastName2.split("=")[1];
-//                    String reqLastName2 = reqLastName.split("�")[0];
-                    String reqFirstName2 = tempServlet.tempFirst;
-                    String reqLastName3 = tempServlet.tempLast;
-                    System.out.println("firstname: " + tempServlet.tempFirst);
-                    System.out.println("lastname: " + tempServlet.tempLast);
-
-
-                    System.out.println(requestTEMP);
-                    requestTEMP = request;
-                    JavaSQL sql;
-                    sql = new JavaSQL();
-                    sql.Insert(tempServlet.tempFirst, tempServlet.tempLast);
-
-                }
-
+            if (reqType.startsWith("POST")) {
+                request = handlePostRequest(bufferedInputStream);
             }
 
-
-//            String request = readLine(bufferedInputStream);
-//            System.out.println("req: " + request);
-//            String reqType = request.split(" ")[0];
-//            System.out.println("tempReq2: " + tempReq);
-
-            System.out.println("reqURL:  " + reqUrl);
             String path = "";
             File f = new File(path);
-
-            if (reqUrl.startsWith("/myServlet")) {
-                path = "/myServlet";
-                f = new File(path);
-                File file = new File(path);
-                byte[] page = readFromFile(file);
-
-                InputStream files = new FileInputStream(f);
-                pout.print("\r\nHTTP/1.1 200 OK\r\n" +
-                        "Content-Type: " + guessContentType(path) + "\r\n" +
-                        "Content-Length: " + page.length + "\r\n" +
-                        "Date: " + new Date() + "\r\n" +
-                        "Server: FileServer 1.0\r\n\r\n");
-                sendFile(files, out);
-                log(socket, "200 OK");
-
-//                handlePOST("peter", "jorgensen");
-            }
             log(socket, request);
-//            while (true) {
-//                String misc = bufferedInputStream.readLine();
-//                if (misc == null || misc.length() == 0)
-//                    break;
-//            }
-//            System.out.println("reqType: " + reqType + " | reqUrl: " + reqUrl);
 
             if (reqUrl.startsWith("/jsonHandler")) {
-                path = "core/web/jsonHandler.html";
-//                System.out.println("path: " + path);
-                f = new File(path);
-
                 JavaSQL.getJSON();
 
+                path = "core/web/jsonHandler.html";
+                f = new File(path);
                 File file = new File(path);
                 byte[] page = readFromFile(file);
 
@@ -174,50 +66,16 @@ public class Server {
                         "Content-Length: " + page.length + "\r\n" +
                         "Date: " + new Date() + "\r\n" +
                         "Server: FileServer 1.0\r\n\r\n");
+                pout.flush();
                 sendFile(files, out);
                 log(socket, "200 OK");
-
-            }
-//            if (reqUrl.startsWith("/src/com/iths/MyServlet.java")) {
-//                // Isolerar fname och lname från html-formuläret
-//                System.out.println(reqUrl);
-//                String reqUrl1 = reqUrl.split("\\?")[1];
-//
-//                // Separerar fname och lname
-//                String reqUrlFirstName = reqUrl1.split("&")[0];
-//                String reqUrlLastName = reqUrl1.split("&")[1];
-//
-//                path = "core/src/com/iths/MyServlet.java";
-//                f = new File(path);
-//                InputStream files = new FileInputStream(f);
-//                sendFile(files, out);
-//
-//                handlePOST(reqUrlFirstName, reqUrlLastName);
-            else {
+            } else {
                 path = "core/web" + reqUrl;
                 f = new File(path);
-                System.out.println("path: " + path);
             }
 
-
             if (reqUrl.startsWith("/action_page.html")) {
-                // Isolerar fname och lname från html-formuläret
-                String reqUrl1 = reqUrl.split("\\?")[1];
-
-                // Separerar fname och lname
-                String reqUrlFirstName = reqUrl1.split("&")[0];
-                String reqUrlLastName = reqUrl1.split("&")[1];
-
-                // tar ut bara namnen som användaren har skrivit
-                String reqFinalFirstName = reqUrlFirstName.split("=")[1];
-                String reqFinalLastName = reqUrlLastName.split("=")[1];
-                path = "core/web/action_page.html";
-                f = new File(path);
-
-                JavaSQL sql;
-                sql = new JavaSQL();
-                sql.Insert(reqFinalFirstName, reqFinalLastName);
-
+                getInsertHandler(reqUrl);
             } else if (reqUrl.startsWith("/layout.css")) {
                 path = "core/web/layout.css";
                 f = new File(path);
@@ -261,34 +119,65 @@ public class Server {
         }
     }
 
-    private static void handlePOST(String firstName, String lastName) throws IOException {
-        String postURL = "core/web/LoginServlet.html";
-        //String postURL = "src/com/iths/MyServlet.java";
-        URL obj = new URL(postURL);
-        HttpURLConnection httpURLConnection = (HttpURLConnection) obj.openConnection();
-        httpURLConnection.setRequestMethod("POST");
+    private static void getInsertHandler(String reqUrl) throws SQLException {
+        String path;
+        File f;
+        // Isolerar fname och lname från html-formuläret
+        String reqUrl1 = reqUrl.split("\\?")[1];
 
-        httpURLConnection.setDoOutput(true);
-        OutputStream postOS = httpURLConnection.getOutputStream();
-        postOS.write(firstName.getBytes());
-        postOS.write(lastName.getBytes());
-        postOS.flush();
-        postOS.close();
+        // Separerar fname och lname
+        String reqUrlFirstName = reqUrl1.split("&")[0];
+        String reqUrlLastName = reqUrl1.split("&")[1];
 
-        int responseCode = httpURLConnection.getResponseCode();
-        System.out.println(responseCode);
+        // tar ut bara namnen som användaren har skrivit
+        String reqFinalFirstName = reqUrlFirstName.split("=")[1];
+        String reqFinalLastName = reqUrlLastName.split("=")[1];
+        path = "core/web/action_page.html";
+        f = new File(path);
 
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
-            String inputLine;
-            StringBuffer response3 = new StringBuffer();
-            while ((inputLine = in .readLine()) != null) {
-                response3.append(inputLine);
-            } in .close();
-            System.out.println(response3);
-        } else {
-            System.out.println("post error");
-        }
+        JavaSQL sql;
+        sql = new JavaSQL();
+        sql.Insert(reqFinalFirstName, reqFinalLastName);
+    }
+
+    @NotNull
+    private static String handlePostRequest(BufferedInputStream bufferedInputStream) throws IOException, SQLException {
+        String request;
+        String tempReq = null;
+        String tempLength = "";
+        boolean hasRun = false;
+        do {
+            request = readLine(bufferedInputStream);
+            System.out.println(request);
+
+            if (request.startsWith("Content-Length: ")) {
+                tempLength = request.split(" ")[1];
+            }
+            if (!hasRun) {
+                String reqType2 = request.split(" ")[0];
+                String reqUrl2 = request.split(" ")[1];
+                System.out.println("OneTimeLoop: " + reqType2 + "  ||  " + reqUrl2);
+                hasRun = true;
+                tempReq = reqUrl2;
+                System.out.println("tempReq: " + tempReq);
+            }
+        } while (!request.isEmpty());
+
+        byte[] body = bufferedInputStream.readNBytes(Integer.parseInt(tempLength));
+        request = new String(body);
+        System.out.println(request);
+
+        String reqFirstPhase1 = request.split("&")[0];
+        String reqFirstPhase2 = reqFirstPhase1.split("=")[1];
+        String reqLastPhase1 = request.split("&")[1];
+        String reqLastPhase2 = reqLastPhase1.split("�")[0];
+        String reqLastPhase3 = reqLastPhase2.split("=")[1];
+        System.out.println("Firstname: " + reqFirstPhase2 + "\nLastname: " + reqLastPhase3);
+
+        JavaSQL sql;
+        sql = new JavaSQL();
+        sql.Insert(reqFirstPhase2, reqLastPhase3);
+        return request;
     }
 
     private static String readLine(BufferedInputStream inputStream) throws IOException {
@@ -371,7 +260,7 @@ public class Server {
             System.err.println(e);
         }
     }
-    }
+}
 
 
 
